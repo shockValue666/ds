@@ -1,4 +1,4 @@
-import { WalletAdapterNetwork, WalletError } from '@solana/wallet-adapter-base';
+import { Adapter, WalletAdapterNetwork, WalletError } from '@solana/wallet-adapter-base';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider as ReactUIWalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import {
@@ -26,11 +26,11 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     const wallets = useMemo(
         () => [
-            new PhantomWalletAdapter(),
-            new SolflareWalletAdapter(),
-            new SolletWalletAdapter({ network }),
-            new SolletExtensionWalletAdapter({ network }),
-            new TorusWalletAdapter(),
+            new PhantomWalletAdapter() as unknown as Adapter,
+            new SolflareWalletAdapter() as unknown as Adapter,
+            // new SolletWalletAdapter({ network }),
+            // new SolletExtensionWalletAdapter({ network }),
+            // new TorusWalletAdapter(),
             // new LedgerWalletAdapter(),
             // new SlopeWalletAdapter(),
         ],
