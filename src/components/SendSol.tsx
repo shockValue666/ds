@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import * as solanaWeb3 from '@solana/web3.js';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import {TOKEN_PROGRAM_ID} from "@solana/spl-token"
+// import {TOKEN_PROGRAM_ID} from "@solana/spl-token"
+import { useNetworkConfiguration } from '../contexts/NetworkConfigurationProvider';
 import Noti from './Noti';
+import TransactionNotification from './TransactionNotification';
+
 
 
 function SendSol({childToParrent}) {
+
+    const { networkConfiguration} = useNetworkConfiguration();
 
     const [address,setaddress] = useState("");
     const [error,setError] = useState(null)
@@ -22,6 +27,8 @@ function SendSol({childToParrent}) {
     })
     const [pushedSender,setPushedSender] = useState(false)
     const [pushedReceiver,setPushedReceiver] = useState(false)
+    const [transactionLink,setTransactionLink] = useState(null) 
+    const [hash,setHash] = useState(null)
 
     const wallet = useWallet();
 
@@ -63,13 +70,25 @@ function SendSol({childToParrent}) {
                 })
                 }
                 setError(false)
+                const transaction = new solanaWeb3.Transaction().add(
+                    solanaWeb3.SystemProgram.transfer({
+                        fromPubkey:wallet.publicKey,
+                        toPubkey:newPub,
+                        lamports:solanaWeb3.LAMPORTS_PER_SOL*parseFloat(amount)
+                    })
+                )
+                const signature = await wallet.sendTransaction(transaction,connection);
+                const validation = await connection.confirmTransaction(signature,"processed")
+                setHash(signature)
+                setTransactionLink(`https://explorer.solana.com/tx/${signature}?cluster=${networkConfiguration}`)
             }catch(er){
                 console.log("er: ",er)
                 setError(true)
             }
-            console.log(parseFloat(amount))
+            // console.log(parseFloat(amount))
         }
     }
+    console.log("networkConfiguration: ",networkConfiguration)
 
     useEffect(()=>{
         if(receiverWalletInfo.address && !pushedReceiver){
@@ -128,6 +147,7 @@ function SendSol({childToParrent}) {
   return (
     <>
     {error ? (<Noti/>) : null }
+    {transactionLink ? (<TransactionNotification transactionLink={transactionLink} hash={hash}/>) : (null)} 
         <div className='w-[300px] flex-column gap-y-12 h-[25vh]'>
             <div>
                 <input type="text" value={address} onChange={(e)=>setaddress(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-6" placeholder="address" required />
