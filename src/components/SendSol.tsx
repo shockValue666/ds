@@ -51,7 +51,7 @@ function SendSol({childToParrent}) {
         else if(address && amount) {
             try{
                 const newPub = new solanaWeb3.PublicKey(address)
-                console.log("newPub: ",newPub.toBase58())
+                // console.log("newPub: ",newPub.toBase58())
                 const sB = await connection.getBalance(new solanaWeb3.PublicKey(address))/solanaWeb3.LAMPORTS_PER_SOL;
                 const mintAcc = new solanaWeb3.PublicKey("MZenLrfXd2ukAktceeUeH539NyRXg2AWgn6SfbErozZ")
                 const tA = await connection.getTokenAccountsByOwner(newPub,{mint:mintAcc})
@@ -116,10 +116,10 @@ function SendSol({childToParrent}) {
         if(wallet){
             if(wallet.publicKey){
                 const newPub = wallet.publicKey;
-                console.log("newPub: ",newPub)
+                // console.log("newPub: ",newPub)
                 const getSolanaBalance = async() =>{
                     const sB = await connection.getBalance(newPub)/solanaWeb3.LAMPORTS_PER_SOL;
-                    console.log("sbbbbb",sB)
+                    // console.log("sbbbbb",sB)
                     const mintAcc = new solanaWeb3.PublicKey("MZenLrfXd2ukAktceeUeH539NyRXg2AWgn6SfbErozZ")
                     const tA = await connection.getTokenAccountsByOwner(newPub,{mint:mintAcc})
                     try{
@@ -141,7 +141,7 @@ function SendSol({childToParrent}) {
                 getSolanaBalance()
             }
         }
-        console.log("senderWalletInfo",senderWalletInfo)
+        // console.log("senderWalletInfo",senderWalletInfo)
     },[wallet])
 
   return (

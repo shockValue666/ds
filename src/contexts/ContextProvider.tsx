@@ -15,6 +15,7 @@ import { FC, ReactNode, useCallback, useMemo } from 'react';
 import { AutoConnectProvider, useAutoConnect } from './AutoConnectProvider';
 import { notify } from "../utils/notifications";
 import { NetworkConfigurationProvider, useNetworkConfiguration } from './NetworkConfigurationProvider';
+import UserProvider from './UserProvider'
 
 const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const { autoConnect } = useAutoConnect();
@@ -44,14 +45,18 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         },
         []
     );
+    
 
     return (
         // TODO: updates needed for updating and referencing endpoint: wallet adapter rework
-        <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets} onError={onError} autoConnect={autoConnect}>
-                <ReactUIWalletModalProvider>{children}</ReactUIWalletModalProvider>
-            </WalletProvider>
-        </ConnectionProvider>
+        
+        <UserProvider>
+            <ConnectionProvider endpoint={endpoint}>
+                <WalletProvider wallets={wallets} onError={onError} autoConnect={autoConnect}>
+                    <ReactUIWalletModalProvider>{children}</ReactUIWalletModalProvider>
+                </WalletProvider>
+            </ConnectionProvider>
+        </UserProvider>
     );
 };
 
