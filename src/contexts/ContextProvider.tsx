@@ -23,7 +23,7 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const network = networkConfiguration as WalletAdapterNetwork;
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-    console.log(network);
+    // console.log(network);
 
     const wallets = useMemo(
         () => [
@@ -50,13 +50,11 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     return (
         // TODO: updates needed for updating and referencing endpoint: wallet adapter rework
         
-        <UserProvider>
             <ConnectionProvider endpoint={endpoint}>
                 <WalletProvider wallets={wallets} onError={onError} autoConnect={autoConnect}>
                     <ReactUIWalletModalProvider>{children}</ReactUIWalletModalProvider>
                 </WalletProvider>
             </ConnectionProvider>
-        </UserProvider>
     );
 };
 
@@ -65,7 +63,11 @@ export const ContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         <>
             <NetworkConfigurationProvider>
                 <AutoConnectProvider>
-                    <WalletContextProvider>{children}</WalletContextProvider>
+                    <WalletContextProvider>
+                        <UserProvider>
+                            {children}
+                        </UserProvider>
+                    </WalletContextProvider>
                 </AutoConnectProvider>
             </NetworkConfigurationProvider>
         </>

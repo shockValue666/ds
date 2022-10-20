@@ -88,7 +88,7 @@ function SendSol({childToParrent}) {
             // console.log(parseFloat(amount))
         }
     }
-    console.log("networkConfiguration: ",networkConfiguration)
+    // console.log("networkConfiguration: ",networkConfiguration)
 
     useEffect(()=>{
         if(receiverWalletInfo.address && !pushedReceiver){

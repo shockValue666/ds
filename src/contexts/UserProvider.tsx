@@ -1,4 +1,7 @@
-import React,{createContext,useContext} from 'react';
+import { useWallet,useAnchorWallet,useConnection, } from '@solana/wallet-adapter-react';
+import React,{createContext,useContext, useEffect,useState} from 'react';
+import * as anchor from '@project-serum/anchor' 
+import {PublicKey,SystemProgram} from '@solana/web3.js'
 
 
 
@@ -12,15 +15,24 @@ export const useUser = () => {
     return context;
 }
 
+
 function UserProvider({children}:any) {
-    const user = {
-        name:"cocksucker",
-        avatar:"https://i.pravatar.cc/300"
-    }
+    const [res,setRes] = useState(null)
+    let wallet = useWallet();
+    useEffect(()=>{ 
+        const user = {
+            name:"cocksucker",
+            avatar:"https://i.pravatar.cc/300",
+            wallet
+        }
+        console.log("wallet changed: ",wallet)
+        console.log("wallet from my cock: ",wallet.publicKey)
+        setRes({user})
+    },[])
   return (
     <BlogContext.Provider
         value={
-            user
+            {res}
         }
     >
         {children}

@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Link from "next/link";
 
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
@@ -10,8 +10,31 @@ import { useUser } from 'contexts/UserProvider';
 
 export const AppBar: FC = props => {
   const { autoConnect, setAutoConnect } = useAutoConnect();
-  const user = useUser()
-  console.log("user from my cock: ",user)
+  const [avatar,setAvatar] = useState(null)
+  const [name,setName] = useState(null)
+  let user = useUser()
+  // console.log("user from my cock: ",user)
+  // useEffect(()=>{
+  //   user = useUser()
+  //   console.log("user from my cock: ",user)
+  // },[user])
+
+  useEffect(()=>{
+    if(user){
+      console.log("user found")
+      console.log("user from useEffect: ",user)
+
+      if(user){
+        if((user as any).res){
+          if((user as any).res.user.avatar && (user as any).res.user.name){
+            setAvatar((user as any).res.user.avatar)
+            setName((user as any).res.user.name)
+            console.log("EXISTSSSS")
+          }
+        }
+      }
+    }
+  },[user])
 
   return (
     <div>
@@ -46,8 +69,8 @@ export const AppBar: FC = props => {
 
         {/* Wallet & Settings */}
         <div className="navbar-end">
-          <img src={user.avatar} alt="" className="w-[40px] h-[40px] rounded-xl" />
-          <a className="btn btn-ghost btn-sm rounded-btn">{user.name}</a>
+          {(name && avatar) ? (  <><img src={avatar} alt="" className="w-[40px] h-[40px] rounded-xl" />
+          <a className="btn btn-ghost btn-sm rounded-btn">{name}</a> </>) : (null)  }
           <WalletMultiButton className="btn btn-ghost mr-4" />
 
           <div className="dropdown dropdown-end">
